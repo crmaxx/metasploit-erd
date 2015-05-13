@@ -8,10 +8,10 @@ class Metasploit::ERD::Diagram < RailsERD::Diagram::Graphviz
 
   # Enable all attributes
   ATTRIBUTES = [
-      :content,
-      :foreign_keys,
-      :primary_keys,
-      :timestamps
+    :content,
+    :foreign_keys,
+    :primary_keys,
+    :timestamps
   ]
 
   # File type that work for embedding in web pages and is lossless.
@@ -33,12 +33,12 @@ class Metasploit::ERD::Diagram < RailsERD::Diagram::Graphviz
 
   # Default options for {#initialize}
   DEFAULT_OPTIONS = {
-      attributes: ATTRIBUTES,
-      filetype: FILETYPE,
-      indirect: INDIRECT,
-      inheritance: INHERITANCE,
-      notation: NOTATION,
-      polymorphism: POLYMORPHISM
+    attributes: ATTRIBUTES,
+    filetype: FILETYPE,
+    indirect: INDIRECT,
+    inheritance: INHERITANCE,
+    notation: NOTATION,
+    polymorphism: POLYMORPHISM
   }
 
   #
@@ -52,15 +52,12 @@ class Metasploit::ERD::Diagram < RailsERD::Diagram::Graphviz
   supersave = callbacks[:save]
 
   # Automatically create parent directory if it does not exist.
-  save {
+  save do
     parent = Pathname.new(filename).parent
-
-    unless parent.directory?
-      parent.mkpath
-    end
+    parent.mkpath unless parent.directory?
 
     instance_eval(&supersave)
-  }
+  end
 
   #
   # Instance Methods
@@ -81,7 +78,7 @@ class Metasploit::ERD::Diagram < RailsERD::Diagram::Graphviz
   # @option options [:horizontal, :vertical] :orientation (:horizontal) The directory of the hierarchy of entities.
   # @option options [Boolean] :polymorphism (POLYMORPHISM) Whether to include abstract or polymorphic pseudo-entities.
   # @option options [String] :title Title for diagram.
-  def initialize(domain, options={})
+  def initialize(domain, options = {})
     super_options = DEFAULT_OPTIONS.merge(options)
 
     super(domain, super_options)

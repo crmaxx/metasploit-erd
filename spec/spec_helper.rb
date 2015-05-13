@@ -9,8 +9,8 @@ if ENV['TRAVIS'] == 'true'
   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 else
   SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-      # either generate the local report
-      SimpleCov::Formatter::HTMLFormatter
+    # either generate the local report
+    SimpleCov::Formatter::HTMLFormatter
   ]
 end
 

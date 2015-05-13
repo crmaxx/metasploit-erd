@@ -10,7 +10,7 @@ module Metasploit::ERD::Clusterable
   # @option options [String] :diretory (Dir.pwd) The directory to use for the `:filename` options.  Only used if
   #   `:basename` is not `nil`.
   # @return [Metasploit::ERD:Diagram]
-  def diagram(options={})
+  def diagram(options = {})
     merged_options = options.except(:basename, :directory)
     basename = options[:basename]
 
@@ -30,10 +30,10 @@ module Metasploit::ERD::Clusterable
   # @return [RailsERD::Domain]
   def domain
     RailsERD::Domain.new(
-        cluster.class_set,
-        # don't warn about missing entities in domain since only belongs_to associations are traced in the cluster and
-        # not has_many associations.
-        warn: false
+      cluster.class_set,
+      # don't warn about missing entities in domain since only belongs_to associations are traced in the cluster and
+      # not has_many associations.
+      warn: false
     )
   end
 end

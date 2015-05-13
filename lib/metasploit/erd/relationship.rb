@@ -42,16 +42,13 @@ class Metasploit::ERD::Relationship
   def polymorphic_class_set
     name = association.name
 
-    ActiveRecord::Base.descendants.each_with_object(Set.new) { |descendant, class_set|
+    ActiveRecord::Base.descendants.each_with_object(Set.new) do |descendant, class_set|
       has_many_reflections = descendant.reflect_on_all_associations(:has_many)
 
       has_many_reflections.each do |has_many_reflection|
         as = has_many_reflection.options[:as]
-
-        if as == name
-          class_set.add descendant
-        end
+        class_set.add descendant if as == name
       end
-    }
+    end
   end
 end

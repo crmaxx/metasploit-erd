@@ -2,14 +2,14 @@ RSpec.describe Metasploit::ERD::Cluster do
   include_context 'ActiveRecord::Base connection'
   include_context 'ActiveRecord::Base.descendants cleaner'
 
-  subject(:cluster) {
+  subject(:cluster) do
     described_class.new(*roots)
-  }
+  end
 
   context '#class_set' do
-    subject(:class_set) {
+    subject(:class_set) do
       cluster.class_set
-    }
+    end
 
     context 'with roots' do
       context 'with cycle' do
@@ -22,7 +22,7 @@ RSpec.describe Metasploit::ERD::Cluster do
         #
 
         before(:each) do
-          a_class = Class.new(ActiveRecord::Base) {
+          a_class = Class.new(ActiveRecord::Base) do
             belongs_to :b,
                        class_name: 'B',
                        inverse_of: :as
@@ -30,7 +30,7 @@ RSpec.describe Metasploit::ERD::Cluster do
             has_many :cs,
                      class_name: 'C',
                      inverse_of: :a
-          }
+          end
 
           stub_const('A', a_class)
 
@@ -40,7 +40,7 @@ RSpec.describe Metasploit::ERD::Cluster do
             t.references :b
           end
 
-          b_class = Class.new(ActiveRecord::Base) {
+          b_class = Class.new(ActiveRecord::Base) do
             has_many :as,
                      class_name: 'A',
                      inverse_of: :b
@@ -48,8 +48,7 @@ RSpec.describe Metasploit::ERD::Cluster do
             belongs_to :c,
                        class_name: 'C',
                        inverse_of: :bs
-
-          }
+          end
 
           stub_const('B', b_class)
 
@@ -57,7 +56,7 @@ RSpec.describe Metasploit::ERD::Cluster do
             t.references :c
           end
 
-          c_class = Class.new(ActiveRecord::Base) {
+          c_class = Class.new(ActiveRecord::Base) do
             belongs_to :a,
                        class_name: 'A',
                        inverse_of: :cs
@@ -65,7 +64,7 @@ RSpec.describe Metasploit::ERD::Cluster do
             has_many :bs,
                      class_name: 'B',
                      inverse_of: :c
-          }
+          end
 
           stub_const('C', c_class)
 
@@ -86,13 +85,13 @@ RSpec.describe Metasploit::ERD::Cluster do
         # lets
         #
 
-        let(:subclass) {
+        let(:subclass) do
           Class.new(superclass)
-        }
+        end
 
-        let(:superclass) {
+        let(:superclass) do
           Class.new(ActiveRecord::Base)
-        }
+        end
 
         #
         # Callbacks
@@ -111,11 +110,11 @@ RSpec.describe Metasploit::ERD::Cluster do
         end
 
         context 'with subclass as root' do
-          let(:roots) {
+          let(:roots) do
             [
-                subclass
+              subclass
             ]
-          }
+          end
 
           it 'includes subclass' do
             expect(class_set).to include(subclass)
@@ -127,11 +126,11 @@ RSpec.describe Metasploit::ERD::Cluster do
         end
 
         context 'with superclass as root' do
-          let(:roots) {
+          let(:roots) do
             [
-                superclass
+              superclass
             ]
-          }
+          end
 
           it 'includes superclass' do
             expect(class_set).to include(superclass)

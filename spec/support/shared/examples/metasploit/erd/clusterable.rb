@@ -9,13 +9,13 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
     ActiveRecord::Migration.verbose = false
 
     ActiveRecord::Migration.create_table :dummy_factories do |t|
-      t.timestamps
+      t.timestamps null: false
     end
 
     ActiveRecord::Migration.create_table :dummy_widgets do |t|
       t.references :factory
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 
@@ -23,29 +23,29 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
   # lets
   #
 
-  let(:dummy_module) {
+  let(:dummy_module) do
     Module.new do
       def self.table_name_prefix
         'dummy_'
       end
     end
-  }
+  end
 
-  let(:dummy_factory) {
+  let(:dummy_factory) do
     Class.new(ActiveRecord::Base) do
       has_many :widgets,
                class_name: 'Dummy::Widget',
                inverse_of: :factory
     end
-  }
+  end
 
-  let(:dummy_widget) {
+  let(:dummy_widget) do
     Class.new(ActiveRecord::Base) do
       belongs_to :factory,
                  class_name: 'Dummy::Factory',
                  inverse_of: :widgets
     end
-  }
+  end
 
   #
   # Callbacks
@@ -60,49 +60,47 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
   end
 
   context '#diagram' do
-    subject(:diagram) {
+    subject(:diagram) do
       entity.diagram(*arguments)
-    }
+    end
 
-    let(:arguments) {
+    let(:arguments) do
       []
-    }
+    end
 
     it { is_expected.to be_a Metasploit::ERD::Diagram }
 
     context 'Metasploit::ERD::Diagram#create' do
-      subject(:create) {
+      subject(:create) do
         diagram.create
-      }
+      end
 
       #
       # lets
       #
 
-      let(:arguments) {
+      let(:arguments) do
         [
-            {
-                directory: directory
-            }
+          {
+            directory: directory
+          }
         ]
-      }
+      end
 
-      let(:directory) {
+      let(:directory) do
         spec_pathname.join('tmp')
-      }
+      end
 
-      let(:spec_pathname) {
+      let(:spec_pathname) do
         Pathname.new(__FILE__).parent.parent.parent.parent.parent.parent
-      }
+      end
 
       #
       # Callbacks
       #
 
       before(:each) do
-        if directory.exist?
-          directory.rmtree
-        end
+        directory.rmtree if directory.exist?
       end
 
       after(:each) do
@@ -122,9 +120,7 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
 
         context 'without existing' do
           it 'creates directory' do
-            expect {
-              create
-            }.to change(directory, :directory?).to(true)
+            expect { create }.to change(directory, :directory?).to(true)
           end
 
           it 'returns path where diagram was written' do
@@ -132,13 +128,12 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
           end
         end
       end
-
     end
 
     context 'Metasploit::ERD::Diagram#domain' do
-      subject(:domain) {
+      subject(:domain) do
         diagram.domain
-      }
+      end
 
       it 'is #domain' do
         entity_domain = entity.domain
@@ -149,27 +144,27 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
     end
 
     context 'Metasploit::ERD::Diagram#options' do
-      subject(:options) {
+      subject(:options) do
         diagram.options
-      }
+      end
 
       context 'with :basename' do
-        let(:arguments) {
+        let(:arguments) do
           [
-              argument_options
+            argument_options
           ]
-        }
+        end
 
-        let(:argument_options) {
+        let(:argument_options) do
           {
-              basename: argument_basename
+            basename: argument_basename
           }
-        }
+        end
 
         context 'with nil' do
-          let(:argument_basename) {
+          let(:argument_basename) do
             nil
-          }
+          end
 
           it 'is not retained' do
             expect(options).not_to have_key(:basename)
@@ -177,18 +172,18 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
         end
 
         context 'without nil' do
-          let(:argument_basename) {
+          let(:argument_basename) do
             'basename.extra.extension'
-          }
+          end
 
           it 'is not retained' do
             expect(options).not_to have_key(:basename)
           end
 
           context '[:filename]' do
-            subject(:filename) {
+            subject(:filename) do
               options[:filename]
-            }
+            end
 
             it 'ends with :basename' do
               expect(filename).to end_with(argument_basename)
@@ -196,25 +191,25 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
           end
 
           context '[:directory]' do
-            let(:argument_options) {
+            let(:argument_options) do
               super().merge(
-                  directory: argument_directory
+                directory: argument_directory
               )
-            }
+            end
 
             context 'with nil' do
-              let(:argument_directory) {
+              let(:argument_directory) do
                 nil
-              }
+              end
 
               it 'is not retained' do
                 expect(options).not_to have_key(:directory)
               end
 
               context '[:filename]' do
-                subject(:filename) {
+                subject(:filename) do
                   options[:filename]
-                }
+                end
 
                 it 'uses Dir.pwd for the directory' do
                   expect(File.dirname(filename)).to eq(Dir.pwd)
@@ -223,18 +218,18 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
             end
 
             context 'without nil' do
-              let(:argument_directory) {
+              let(:argument_directory) do
                 '/a/directory'
-              }
+              end
 
               it 'is not retained' do
                 expect(options).not_to have_key(:directory)
               end
 
               context '[:filename]' do
-                subject(:filename) {
+                subject(:filename) do
                   options[:filename]
-                }
+                end
 
                 it 'uses :directory for the directory' do
                   expect(File.dirname(filename)).to eq(argument_directory)
@@ -252,9 +247,9 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
       end
 
       context '[:title]' do
-        subject(:title) {
+        subject(:title) do
           options[:title]
-        }
+        end
 
         it { is_expected.to be_a String }
       end
@@ -273,10 +268,7 @@ RSpec.shared_examples_for 'Metasploit::ERD::Clusterable' do
 
       expect(entity).to receive(:cluster).and_return(cluster)
       expect(cluster).to receive(:class_set).and_return(class_set)
-      expect(RailsERD::Domain).to receive(:new).with(
-                                      class_set,
-                                      hash_including(warn: false)
-                                  )
+      expect(RailsERD::Domain).to receive(:new).with(class_set, hash_including(warn: false))
 
       domain
     end

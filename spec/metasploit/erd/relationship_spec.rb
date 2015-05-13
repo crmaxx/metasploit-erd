@@ -2,21 +2,21 @@ RSpec.describe Metasploit::ERD::Relationship do
   include_context 'ActiveRecord::Base connection'
   include_context 'ActiveRecord::Base.descendants cleaner'
 
-  subject(:relationship) {
+  subject(:relationship) do
     described_class.new(association)
-  }
+  end
 
   #
   # lets
   #
 
-  let(:owner) {
+  let(:owner) do
     Class.new(ActiveRecord::Base)
-  }
+  end
 
-  let(:owner_name) {
+  let(:owner_name) do
     'Owner'
-  }
+  end
 
   #
   # Callbacks
@@ -27,23 +27,23 @@ RSpec.describe Metasploit::ERD::Relationship do
   end
 
   context '#class_set' do
-    subject(:class_set) {
+    subject(:class_set) do
       relationship.class_set
-    }
+    end
 
     context 'with polymorphic:' do
       context 'false' do
-        let(:association) {
+        let(:association) do
           owner.reflect_on_association(:klass)
-        }
+        end
 
-        let(:klass) {
+        let(:klass) do
           Class.new(ActiveRecord::Base)
-        }
+        end
 
-        let(:klass_name) {
+        let(:klass_name) do
           'Klass'
-        }
+        end
 
         #
         # Callbacks
@@ -63,13 +63,13 @@ RSpec.describe Metasploit::ERD::Relationship do
           ActiveRecord::Migration.verbose = false
 
           ActiveRecord::Migration.create_table :klasses do |t|
-            t.timestamps
+            t.timestamps null: false
           end
 
           ActiveRecord::Migration.create_table :owners do |t|
             t.references :klass
 
-            t.timestamps
+            t.timestamps null: false
           end
         end
 
@@ -85,29 +85,25 @@ RSpec.describe Metasploit::ERD::Relationship do
         # lets
         #
 
-        let(:association) {
+        let(:association) do
           owner.reflect_on_association(:thing)
-        }
+        end
 
-        let(:things) {
+        let(:things) do
           owner_name = self.owner_name
 
-          thing_names.collect { |class_name|
-            klass = Class.new(ActiveRecord::Base) {
+          thing_names.collect do |class_name|
+            klass = Class.new(ActiveRecord::Base) do
               has_many :owners,
                        as: :thing,
                        class_name: owner_name
-            }
+            end
 
             stub_const(class_name, klass)
-          }
-        }
+          end
+        end
 
-        let(:thing_names) {
-          Array.new(2) { |n|
-            "Thing#{n}"
-          }
-        }
+        let(:thing_names) { Array.new(2) { |n| "Thing#{n}" } }
 
         #
         # Callbacks
@@ -125,12 +121,12 @@ RSpec.describe Metasploit::ERD::Relationship do
           ActiveRecord::Migration.create_table :owners do |t|
             t.references :thing
 
-            t.timestamp
+            t.timestamp null: false
           end
 
           things.each do |thing|
             ActiveRecord::Migration.create_table thing.table_name do |t|
-              t.timestamp
+              t.timestamp null: false
             end
           end
         end
@@ -151,48 +147,45 @@ RSpec.describe Metasploit::ERD::Relationship do
   end
 
   context '#polymorphic_class_set' do
-    subject(:polymorphic_class_set) {
+    subject(:polymorphic_class_set) do
       relationship.send(:polymorphic_class_set)
-    }
+    end
 
     #
     # Lets
     #
 
-    let(:association) {
+    let(:association) do
       owner.reflect_on_association(:first)
-    }
+    end
 
-    let(:group_names) {
-      [
-          'First',
-          'Second'
-      ]
-    }
+    let(:group_names) do
+      %w(First Second)
+    end
 
-    let(:polymorphics_by_group_name) {
+    let(:polymorphics_by_group_name) do
       owner_name = self.owner_name
 
-      polymorphic_names_by_group_name.each_with_object({}) { |(group_name, polymorphic_names), hash|
-        hash[group_name] = polymorphic_names.collect { |class_name|
-          klass = Class.new(ActiveRecord::Base) {
+      polymorphic_names_by_group_name.each_with_object({}) do |(group_name, polymorphic_names), hash|
+        hash[group_name] = polymorphic_names.collect do |class_name|
+          klass = Class.new(ActiveRecord::Base) do
             has_many :owners,
                      as: group_name.underscore.to_sym,
                      class_name: owner_name
-          }
+          end
 
           stub_const(class_name, klass)
-        }
-      }
-    }
+        end
+      end
+    end
 
-    let(:polymorphic_names_by_group_name) {
-      group_names.each_with_object({}) { |group_name, hash|
-        hash[group_name] = Array.new(2) { |n|
+    let(:polymorphic_names_by_group_name) do
+      group_names.each_with_object({}) do |group_name, hash|
+        hash[group_name] = Array.new(2) do |n|
           "#{group_name}Polymorphic#{n}"
-        }
-      }
-    }
+        end
+      end
+    end
 
     #
     # Callbacks
@@ -211,13 +204,13 @@ RSpec.describe Metasploit::ERD::Relationship do
           t.references group_name.underscore.to_sym
         end
 
-        t.timestamp
+        t.timestamp null: false
       end
 
-      polymorphics_by_group_name.each do |group_name, polymorphics|
+      polymorphics_by_group_name.each do |_, polymorphics|
         polymorphics.each do |klass|
           ActiveRecord::Migration.create_table klass.table_name do |t|
-            t.timestamps
+            t.timestamps null: false
           end
         end
       end

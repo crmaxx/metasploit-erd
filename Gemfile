@@ -14,16 +14,13 @@ group :development do
 end
 
 group :test do
-  rails_version_constraint = [
-      '>= 4.0.9',
-      '< 4.1.0'
-  ]
   # blank?
-  gem 'activesupport', *rails_version_constraint
+  gem 'activesupport', '>= 4.2.1'
   # Upload coverage reports to coveralls.io
   gem 'coveralls', require: false
   # code coverage of tests
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
   # in-memory database for ActiveRecord association traversal
   gem 'sqlite3'
+  gem 'fuubar'
 end

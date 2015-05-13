@@ -102,14 +102,14 @@ RSpec.describe Metasploit::ERD::Entity::Class do
           ActiveRecord::Migration.verbose = false
 
           ActiveRecord::Migration.create_table :targets do |t|
-            t.timestamps
+            t.timestamps null: false
           end
 
           ActiveRecord::Migration.create_table :klasses do |t|
             t.references :first_target
             t.references :second_target
 
-            t.timestamps
+            t.timestamps null: false
           end
         end
 
@@ -189,19 +189,19 @@ RSpec.describe Metasploit::ERD::Entity::Class do
           ActiveRecord::Migration.verbose = false
 
           ActiveRecord::Migration.create_table :belongs_to_targets do |t|
-            t.timestamps
+            t.timestamps null: false
           end
 
           ActiveRecord::Migration.create_table :klass do |t|
             t.references :belongs_to_target
 
-            t.timestamps
+            t.timestamps null: false
           end
 
           ActiveRecord::Migration.create_table :has_many_targets do |t|
             t.references :klass
 
-            t.timestamps
+            t.timestamps null: false
           end
         end
 

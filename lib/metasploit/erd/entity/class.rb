@@ -33,10 +33,10 @@ class Metasploit::ERD::Entity::Class
   def class_set
     reflections = klass.reflect_on_all_associations(:belongs_to)
 
-    reflections.each_with_object(Set.new) { |reflection, set|
+    reflections.each_with_object(Set.new) do |reflection, set|
       relationship = Metasploit::ERD::Relationship.new(reflection)
       set.merge(relationship.class_set)
-    }
+    end
   end
 
   # Cluster seeded with {#klass}.
@@ -58,10 +58,10 @@ class Metasploit::ERD::Entity::Class
   # @option options [String] :basename ("<klass.name.underscore>.erd") The basename to use for the `:filename`
   #   option.
   # @option options [String] :title ("<klass.name> Namespace Entity-Relationship Diagram") Title for diagram.
-  def diagram(options={})
+  def diagram(options = {})
     super_options = {
-        basename: "#{klass.name.underscore}.erd",
-        title: "#{klass} Entity-Relationship Diagram"
+      basename: "#{klass.name.underscore}.erd",
+      title: "#{klass} Entity-Relationship Diagram"
     }.merge(options)
 
     super(super_options)

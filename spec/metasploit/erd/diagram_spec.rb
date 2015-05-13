@@ -1,25 +1,25 @@
 RSpec.describe Metasploit::ERD::Diagram do
-  subject(:diagram) {
+  subject(:diagram) do
     described_class.new(*arguments)
-  }
+  end
 
-  let(:arguments) {
+  let(:arguments) do
     [
-        domain
+      domain
     ]
-  }
+  end
 
-  let(:domain) {
+  let(:domain) do
     RailsERD::Domain.new
-  }
+  end
 
   it { is_expected.to be_a RailsERD::Diagram::Graphviz }
 
   context 'CONSTANTS' do
     context 'ATTRIBUTES' do
-      subject(:attributes) {
+      subject(:attributes) do
         described_class::ATTRIBUTES
-      }
+      end
 
       it { is_expected.to include :content }
       it { is_expected.to include :foreign_keys }
@@ -28,14 +28,14 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context 'DEFAULT_OPTIONS' do
-      subject(:default_options) {
+      subject(:default_options) do
         described_class::DEFAULT_OPTIONS
-      }
+      end
 
       context '[:attributes]' do
-        subject(:attributes) {
+        subject(:attributes) do
           default_options[:attributes]
-        }
+        end
 
         it 'should be ATTRIBUTES' do
           expect(attributes).to eq(described_class::ATTRIBUTES)
@@ -43,9 +43,9 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context '[:filetype]' do
-        subject(:filetype) {
+        subject(:filetype) do
           default_options[:filetype]
-        }
+        end
 
         it 'should be FILETYPE' do
           expect(filetype).to eq(described_class::FILETYPE)
@@ -53,9 +53,9 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context '[:indirect]' do
-        subject(:indirect) {
+        subject(:indirect) do
           default_options[:indirect]
-        }
+        end
 
         it 'should be INDIRECT' do
           expect(indirect).to eq(described_class::INDIRECT)
@@ -63,9 +63,9 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context '[:inheritance]' do
-        subject(:inheritance) {
+        subject(:inheritance) do
           default_options[:inheritance]
-        }
+        end
 
         it 'should be INHERITANCE' do
           expect(inheritance).to eq(described_class::INHERITANCE)
@@ -73,9 +73,9 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context '[:notation]' do
-        subject(:notation) {
+        subject(:notation) do
           default_options[:notation]
-        }
+        end
 
         it 'should be NOTATION' do
           expect(notation).to eq(described_class::NOTATION)
@@ -83,9 +83,9 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context '[:polymorphism]' do
-        subject(:polymorphism) {
+        subject(:polymorphism) do
           default_options[:polymorphism]
-        }
+        end
 
         it 'should be POLYMORPHISM' do
           expect(polymorphism).to eq(described_class::POLYMORPHISM)
@@ -94,55 +94,55 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context 'FILETYPE' do
-      subject(:filetype) {
+      subject(:filetype) do
         described_class::FILETYPE
-      }
+      end
 
       it { is_expected.to eq(:png) }
     end
 
     context 'INDIRECT' do
-      subject(:indirect) {
+      subject(:indirect) do
         described_class::INDIRECT
-      }
+      end
 
       it { is_expected.to eq(false) }
     end
 
     context 'INHERITANCE' do
-      subject(:inheritance)  {
+      subject(:inheritance)  do
         described_class::INHERITANCE
-      }
+      end
 
       it { is_expected.to eq(true) }
     end
 
     context 'NOTATION' do
-      subject(:notation) {
+      subject(:notation) do
         described_class::NOTATION
-      }
+      end
 
       it { is_expected.to eq(:crowsfoot) }
     end
 
     context 'POLYMORPHISM' do
-      subject(:polymorphism) {
+      subject(:polymorphism) do
         described_class::POLYMORPHISM
-      }
+      end
 
       it { is_expected.to eq(true) }
     end
   end
 
   context 'callbacks' do
-    subject(:callbacks) {
+    subject(:callbacks) do
       described_class.send(:callbacks)
-    }
+    end
 
     context '[:each_entity]' do
-      subject(:each_entity) {
+      subject(:each_entity) do
         callbacks[:each_entity]
-      }
+      end
 
       it { is_expected.to_not be_nil }
 
@@ -152,9 +152,9 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context '[:each_relationship]' do
-      subject(:each_relationship) {
+      subject(:each_relationship) do
         callbacks[:each_relationship]
-      }
+      end
 
       it { is_expected.to_not be_nil }
 
@@ -164,9 +164,9 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context '[:each_specialization]' do
-      subject(:each_specialization) {
+      subject(:each_specialization) do
         callbacks[:each_specialization]
-      }
+      end
 
       it { is_expected.to_not be_nil }
 
@@ -176,9 +176,9 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context '[:save]' do
-      subject(:save) {
+      subject(:save) do
         callbacks[:save]
-      }
+      end
 
       it { is_expected.to_not be_nil }
 
@@ -188,9 +188,9 @@ RSpec.describe Metasploit::ERD::Diagram do
     end
 
     context '[:setup]' do
-      subject(:setup) {
+      subject(:setup) do
         callbacks[:setup]
-      }
+      end
 
       it { is_expected.to_not be_nil }
 
@@ -207,15 +207,15 @@ RSpec.describe Metasploit::ERD::Diagram do
       end
 
       context 'with options' do
-        let(:arguments) {
+        let(:arguments) do
           super() + [options]
-        }
+        end
 
-        let(:options) {
+        let(:options) do
           {
-              key: :value
+            key: :value
           }
-        }
+        end
 
         it 'merges options with DEFAULT_OPTIONS' do
           expect(described_class::DEFAULT_OPTIONS).to receive(:merge).with(options).and_call_original

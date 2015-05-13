@@ -30,11 +30,11 @@ class Metasploit::ERD::Entity::Namespace
   #   of `ActiveRecord::Base` descendants.
   # @return [Array<Class<ActiveRecord::Base>
   def classes
-    ActiveRecord::Base.descendants.select { |klass|
-      klass.parents.any? { |parent|
+    ActiveRecord::Base.descendants.select do |klass|
+      klass.parents.any? do |parent|
         parent.name == namespace_name
-      }
-    }
+      end
+    end
   end
 
   # Cluster seeded with all {#classes} in this namespace.
@@ -55,10 +55,10 @@ class Metasploit::ERD::Entity::Namespace
   # @option options [String] :basename ("<namespace_name.underscore>.erd") The basename to use for the `:filename`
   #   option.
   # @option options [String] :title ("<namespace_name> Namespace Entity-Relationship Diagram") Title for diagram.
-  def diagram(options={})
+  def diagram(options = {})
     super_options = {
-        basename: "#{namespace_name.underscore}.erd",
-        title: "#{namespace_name} Namespace Entity-Relationship Diagram"
+      basename: "#{namespace_name.underscore}.erd",
+      title: "#{namespace_name} Namespace Entity-Relationship Diagram"
     }.merge(options)
 
     super(super_options)
